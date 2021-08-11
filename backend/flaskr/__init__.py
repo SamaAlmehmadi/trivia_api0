@@ -45,23 +45,13 @@ def create_app(test_config=None):
     return response 
    
   # get request all avaliable categories 
-  @app.route('/categories', methods=['GET'] )
-  def categories ():
-     categories = Category.query.order_by(Category.id).all()
-     Category_List = {category.id: category.type for category in categories}
-    
-
-     if len (Category_List) ==ZERO:
-          abort(404)
-     return jsonify({
-            'success': True,
-            'categories': Category_List
-        })
+  
 
   @app.route('/questions', methods=['GET'])
   def questions():
    selectin = Question.query.order_by(Question.id).all()
    now_questions =paginateQustions(request , selectin)
+   categories = Category.query.order_by(Category.id).all()
    if len(now_questions)==ZERO:
         abort(404)
    
@@ -260,7 +250,6 @@ def create_app(test_config=None):
       }),500
       
   return app
-
 
 
 
