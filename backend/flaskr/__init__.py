@@ -1,9 +1,9 @@
 import os
 from re import search
 from flask import(
-  Flask,
-   request,
-    abort, 
+    Flask,
+    request,
+     abort, 
     jsonify)
 from flask.globals import current_app
 from flask_sqlalchemy import SQLAlchemy
@@ -11,13 +11,10 @@ from flask_cors import CORS
 import random
 import sys
 from sqlalchemy.orm import selectin_polymorphic, selectinload
-
-
 from sqlalchemy.sql.operators import startswith_op
 from werkzeug.wrappers import Response
-
-
 from models import setup_db, Question, Category
+
 
 QUESTIONS_PER_PAGE = 10
 ZERO=0
@@ -26,13 +23,10 @@ def paginateQustions(request , selection):
    items_limit = request.args.get('limit', 10, type=int)
    selected_page = request.args.get('page', 1, type=int)
    current_index = selected_page - 1
-
    questions = \
             Question.query.order_by(
                 Question.id
             ).limit(items_limit).offset(current_index * items_limit).all()
-   
-   
    questions = [question.format() for question  in selection]
   #return current questions 
    return  questions
@@ -66,12 +60,12 @@ def create_app(test_config=None):
         abort(404)
    return jsonify({
     'success': True,
-    'questions':  now_questions, 
-     'total_of_questions':len(selectin),
-     'categories':Category_List
+    'questions': now_questions, 
+     'total_of_questions': len(selectin),
+     'categories': Category_List
   })
    
-  @app.route('/categories' ,  methods=['GET'])  
+  @app.route('/categories' , methods=['GET'])  
   def get_categories():
         categories = Category.query.order_by(Category.id).all()
         Category_List = {category.id: category.type for category in categories}
@@ -84,21 +78,7 @@ def create_app(test_config=None):
             'categories': Category_List
         })
         
-  #using after rquest 
-  #after_request()
-  #get Category
-  #categories()
-      
-  #get questions()
-  #questions()
-  
-
-  '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
-  '''
+  #delete 
   @app.route('/questions/<int:id>' , methods=['DELETE'])  
   def delete_questions(id):
       question = Question.query.filter(Question.id == id ).one_or_none()
@@ -109,18 +89,9 @@ def create_app(test_config=None):
      
       return jsonify ({
         'success':True  
-
       })
-      
-
-      
-
    
- # Create an endpoint to POST a new question, 
-  #which will require the question and answer text, 
-  #category, and difficulty score.
-
- 
+  #endpoint for add new quesion and can seaerch by useing {search_term}
   @app.route('/questions' , methods=['POST'])
   def add_question():
     body = request.get_json()
@@ -155,22 +126,17 @@ def create_app(test_config=None):
       category=newCategory
      )
      
-
       question.insert()
       return jsonify({
                 'success': True,
                 'message':'Question successfully added'
                 
             })
-    
-       # abort(422)
-   
-   
+     
  # Create a POST endpoint to get questions based on a search term. 
   #It should return any questions for whom the search term 
   #is a substring of the question. 
 
-  
   
   @app.route('/categories/<int:id>/questions' , methods=[ 'GET'])
   def get_questions_based_category(id):
@@ -187,9 +153,7 @@ def create_app(test_config=None):
     }),200
   
   
-  #Create a POST endpoint to get questions to play the quiz. 
-  #This endpoint should take category and previous question parameters 
-  #and return a random questions within the given category, 
+  #eturn a random questions within the given category, 
   #if provided, and that is not one of the previous questions. 
   @app.route('/quizzes' , methods=['POST'])
   def game_quiz():
@@ -202,9 +166,12 @@ def create_app(test_config=None):
      if quiz_category is None or previous_question is None:
         abort(400)
      if categoryid == ZERO:
-       question_all = Question.query.filter( Question.id.notin_(previous_question)).all()
+       question_all = Question.query.filter( \
+         Question.id.notin_(previous_question)).all()
      else:
-       question_all = Question.query.filter(Question.id.notin_(previous_question), Question.category == categoryid).all()
+       question_all = Question.query.filter(\
+         Question.id.notin_(previous_question), \
+           Question.category == categoryid).all()
        Aquestion =None
      if  question_all:
            Aquestion = random.choice( question_all)
@@ -260,8 +227,3 @@ def create_app(test_config=None):
       }),500
       
   return app
-
-
-
-
-
