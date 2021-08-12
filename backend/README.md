@@ -40,14 +40,21 @@ python test_flaskr.py
 
 From within the `./src` directory first ensure you are working using your created virtual environment.
 
-To run the server, execute:
+To run the server for MAC, execute:
 
 ```bash
 export Flask_APP=flaskr 
 export FLASK_ENV=development
 flask run
 ```
+for Windows OS 
+```bach 
+$env:FLASK_APP ="flaskr"
 
+$env:FLASK_ENV ="development"
+
+python3 -m flask run
+```
 setting the `FLASK_ENV` varbile to `development` will deltct file  will detect file changes and restart the server automatically.
 setting the `FLASK_ENV` varbile to `flaskr` directs flask to use the flaskr directory and the `__init__.py`
 
@@ -81,8 +88,9 @@ the Erorr formated like :
   - 500 – Internal error, please try again.
 
   ## Endpoints
+   Note : I use postman to test endpint
   ### GET /categories
-  - sample curl `curl http://127.0.0.1:5000/categories`
+  - sample curl `curl http://127.0.0.1:3000/categories`
  ```js  {
         'categories': {
             '1': 'Science', 
@@ -96,7 +104,7 @@ the Erorr formated like :
     }
 ```
 ### GET /questions
-- sample curl `curl http://127.0.0.1:5000/questions`
+- sample curl `curl http://127.0.0.1:3000/questions`
  ```js     {
     "categories": {
         "1": "Science",
@@ -108,72 +116,160 @@ the Erorr formated like :
     },
     "questions": [
         {
+            "answer": "Apollo 13",
+            "category": 5,
+            "difficulty": 4,
+            "id": 2,
+            "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
             "answer": "Tom Cruise",
             "category": 5,
             "difficulty": 4,
             "id": 4,
             "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
         },
-       
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Edward Scissorhands",
+            "category": 5,
+            "difficulty": 3,
+            "id": 6,
+            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        },
+        {
+            "answer": "Brazil",
+            "category": 6,
+            "difficulty": 3,
+            "id": 10,
+            "question": "Which is the only team to play in every soccer World Cup tournament?"
+        },
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        }
     ],
-    "success": True,
-    "total_questions": 19
+    "success": true,
+    "total_of_questions": 71
 }
 ```
 ### DELETE /questions/int:id
+Sample :`http://127.0.0.1:3000/questions/2'
 ```js 
 {
           "success": True,
         }
 ```
+
+
 ### POST / questions
-Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{'question': 'what is my age?', 'answer': '21', 'difficulty': 4, 'category' : 4})'`
-
+Create questions 
+Example: 
 ```js 
 {
-          "success": True,
-        }
+    "question": "what is my favorite day ?",
+             "answer": "Mother day",
+              "difficulty": 1, 
+              "category" : 5
+}
+
+{
+    "message": "Question successfully added",
+    "success": true
+}
 ```
 
-### POST /questions/search
-- Request body {seachTerm:string}
-EXample:
+### POST /questions
+- Request body {seachTerm:string} POST in postman
+` {"searchTerm": "What is the heaviest organ in the human body?"}`
+
+ in the same //questions you can search 
+EXample:`http://127.0.0.1:3000/questions`
+
 ```js
 {
-  "questions": [
-    {
-      "answer": "Apollo 13",
-      "category": 5,
-      "difficulty": 4,
-      "id": 2,
-      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
-    }
-  ],
-  "success": True,
-  "total_questions": 1,
-  "categories": {1: "Science", 2: "Art", 3: "Geography", 4: "History", 5: "Entertainment", 6: "Sports"},
-  "current_category" : "all"
+    "questions": [
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        }
+    ],
+    "success": true,
+    "total_questions": 71
 }
  ```
 
 ### GET/categories/int:id/questions
  - search besed on categories
- - Example 
+ - Example `http://127.0.0.1:3000/categories/3/questions`
  ```js
  {
-  "current_category": "Science",
-  "questions": [
-    {
-      "answer": "The Liver",
-      "category": 1,
-      "difficulty": 4,
-      "id": 20,
-      "question": "What is the heaviest organ in the human body?"
-    },
-   
-  ],
-  "success": true,
-  "total_questions": 3
+    "current_category": "Geography",
+    "questions": [
+        {
+            "answer": "Lake Victoria",
+            "category": 3,
+            "difficulty": 2,
+            "id": 13,
+            "question": "What is the largest lake in Africa?"
+        },
+        {
+            "answer": "The Palace of Versailles",
+            "category": 3,
+            "difficulty": 3,
+            "id": 14,
+            "question": "In which royal palace would you find the Hall of Mirrors?"
+        },
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        }
+    ],
+    "success": true,
+    "total_questions": 3
 }
 
 
@@ -181,19 +277,24 @@ EXample:
   ```
 
   ### POST  /quizzes
+   
  - Example
-
+ `http://127.0.0.1:3000/quizzes` 
+ `POST {
+            "previous_questions" : [4,10], "quiz_category": {"type": "Art", "id":"2"}
+    }`
+    
  ```js 
  {
-    "success": true,
     "question": {
-    "answer": "George Washington Carver",
-    "category": 4,
-    "difficulty": 2,
-    "id": 12,
-    "question": "Who invented Peanut Butter?"
-  }
-}   
+        "answer": "Jackson Pollock",
+        "category": 2,
+        "difficulty": 2,
+        "id": 19,
+        "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    },
+    "success": true
+} 
  ``` 
 
 ## Athors 

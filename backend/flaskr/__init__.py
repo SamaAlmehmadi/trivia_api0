@@ -95,12 +95,14 @@ def create_app(test_config=None):
   @app.route('/questions/<int:id>' , methods=['DELETE'])  
   def delete_questions(id):
       question = Question.query.filter(Question.id == id ).one_or_none()
+      
       if question is None: 
          abort(404)  
       question.delete()
      
       return jsonify ({
-        'success':True             
+        'success':True  
+
       })
       
 
@@ -150,7 +152,7 @@ def create_app(test_config=None):
                 'success': True,
                 'message':'Question successfully added'
                 
-            }),201
+            })
     except:
         abort(422)
    
@@ -205,7 +207,7 @@ def create_app(test_config=None):
         }) 
  
     except:
-       abort(422)
+       abort(400)
   #@TODO: 
   #Create error handlers for all expected errors 
   #including 404 and 422. 
