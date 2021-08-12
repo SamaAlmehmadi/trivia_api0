@@ -14,11 +14,16 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
+        self.DB_HOST = os.getenv('DB_HOST', '127.0.0.1:5432')  
+        self.DB_USER = os.getenv('DB_USER', 'postgres')  
+        self.DB_PASSWORD = os.getenv('DB_PASSWORD', '1234')  
+        self.DB_NAME = os.getenv('DB_NAME', 'trivia')  
+        self.DB_PATH = 'postgresql+psycopg2://{}:{}@{}/{}'.format(self.DB_USER, self.DB_PASSWORD, self.DB_HOST, self.DB_NAME)
         #name of database 
-        self.database_name = "trivia"
+        #self.database_name = "trivia"
         #you should change passowed if have  databasse password
-        self.database_path = "postgresql://postgres:1234@{}/{}".format('localhost:5432', self.database_name)
-        setup_db(self.app, self.database_path)
+        #self.database_path = "postgresql://postgres:1234@{}/{}".format('localhost:5432', self.database_name)
+        setup_db(self.app, self.DB_PATH)
         self.new_q = {
             'question': 'what is my favorite day ?',
              'answer': 'Mother day',
@@ -53,13 +58,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         
         
-    def test_404_sent_req_beyond_invalid_page(self):
-        res =self.client().get('/questions?page=1000')
+    '''def test_404_sent_req_beyond_invalid_page(self):
+        res =self.client().get('/questions?page=100')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
-        
-        
+        self.assertEqual(data['message'],'Resource Not Found')
+    '''    
     #categories 
     def test_get_paginated_categories(self):
         res = self.client().get('/categories')

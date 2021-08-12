@@ -23,12 +23,19 @@ QUESTIONS_PER_PAGE = 10
 ZERO=0
 #create paginate for questions
 def paginateQustions(request , selection):
-   page = request.args.get('page' , 1 , type=int)
-   start =(page-1)*QUESTIONS_PER_PAGE
-   end = start + QUESTIONS_PER_PAGE
+   items_limit = request.args.get('limit', 10, type=int)
+   selected_page = request.args.get('page', 1, type=int)
+   current_index = selected_page - 1
+
+   questions = \
+            Question.query.order_by(
+                Question.id
+            ).limit(items_limit).offset(current_index * items_limit).all()
+   
+   
    questions = [question.format() for question  in selection]
   #return current questions 
-   return  questions[start:end]
+   return  questions
    
 
 #test_config=None
@@ -52,11 +59,11 @@ def create_app(test_config=None):
    selectin = Question.query.order_by(Question.id).all()
    now_questions =paginateQustions(request , selectin)
    categories = Category.query.order_by(Category.id).all()
-   if len(now_questions)==ZERO:
-        abort(404)
+   
    
    Category_List = {category.id: category.type for category in categories}
-  
+   if len(now_questions)==ZERO:
+        abort(404)
    return jsonify({
     'success': True,
     'questions':  now_questions, 
@@ -132,14 +139,16 @@ def create_app(test_config=None):
                 'total_questions':total_q 
             })
     else:
+      
       body =request.get_json()
       newQuestions = body.get('question','')
       newAnswer=body.get('answer','')
       newDifficulty = body.get('difficulty' ,'')
       newCategory = body.get('category' , '')
     
-    try:
-       question = Question(
+      if newQuestions ==''or newAnswer=='' or  newDifficulty=='' or newCategory=='':
+         abort(422)
+      question = Question(
         question = newQuestions ,
       answer =newAnswer , 
       difficulty =newDifficulty,
@@ -147,14 +156,14 @@ def create_app(test_config=None):
      )
      
 
-       question.insert()
-       return jsonify({
+      question.insert()
+      return jsonify({
                 'success': True,
                 'message':'Question successfully added'
                 
             })
-    except:
-        abort(422)
+    
+       # abort(422)
    
    
  # Create a POST endpoint to get questions based on a search term. 
